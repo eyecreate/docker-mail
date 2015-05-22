@@ -1,0 +1,140 @@
+
+#####################
+#        SSL        #
+#####################
+
+# Check if we have SSL certificates in config, otherwise copy them there
+# The key
+if [ -f /mail_settings/ssl/wildcard_private.key ]; then
+  cp /mail_settings/ssl/wildcard_private.key /etc/ssl/private/ssl-cert-snakeoil.key
+else
+  mkdir -p /mail_settings/ssl
+  cp /etc/ssl/private/ssl-cert-snakeoil.key /mail_settings/ssl/wildcard_private.key
+fi
+# The certificate
+if [ -f /mail_settings/ssl/wildcard_public_cert.crt ]; then
+  cp /mail_settings/ssl/wildcard_public_cert.crt /etc/ssl/certs/ssl-cert-snakeoil.pem
+else
+  mkdir -p /mail_settings/ssl
+  cp /etc/ssl/certs/ssl-cert-snakeoil.pem /mail_settings/ssl/wildcard_public_cert.crt
+fi
+
+
+#####################
+#      POSTFIX      #
+#####################
+
+# Set the hostname in postfix config files
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/postfix/main.cf
+  echo $(sed 's:/:\\/:g' /mail_settings/hostname) > /etc/mailname
+fi
+
+# Configure domains and aliases from setting
+cp /mail_settings/aliases /etc/postfix/virtual
+cp /mail_settings/domains /etc/postfix/virtual-mailbox-domains
+
+mkdir /etc/postfix/tmp
+awk < /etc/postfix/virtual '{ print $2 }' > /etc/postfix/tmp/virtual-receivers
+sed -r 's,(.+)@(.+),\2/\1/,' /etc/postfix/tmp/virtual-receivers > /etc/postfix/tmp/virtual-receiver-folders
+paste /etc/postfix/tmp/virtual-receivers /etc/postfix/tmp/virtual-receiver-folders > /etc/postfix/virtual-mailbox-maps
+
+# map virtual aliases and user/filesystem mappings
+postmap /etc/postfix/virtual
+postmap /etc/postfix/virtual-mailbox-maps
+
+# Activate the header checks
+postmap /etc/postfix/smtp_header_checks
+
+# Set the postfix configuration permissions
+chown -R postfix:postfix /etc/postfix
+
+
+#####################
+#       DOVECOT     #
+#####################
+
+# set the hostname in dovecot config files
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/dovecot/conf.d/15-lda.conf
+fi
+
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/dovecot/conf.d/20-imap.conf
+fi
+
+#################
+# something to create all the mail folders
+# and set their permission to owned by dovecot:dovecot
+#################
+
+# Configure dovecot passwords from setting
+cp /mail_settings/passwords /etc/dovecot/passwd
+
+# Set the dovecot confirmation permissions
+chown -R dovecot:dovecot /etc/dovecot
+chmod -R o-rwx /etc/dovecot
+
+
+#####################
+#      OPENDKIM     #
+#####################
+# make sure the opendkim config directory is present
+mkdir -p /etc/opendkim
+
+# set the hostname in the opendkim config
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/opendkim/KeyTable
+fi
+
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/opendkim/SigningTable
+fi
+
+if [ -f /mail_settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/" /etc/opendkim/TrustedHosts
+fi
+
+# Move the opendkim mail key
+cp /mail_settings/mail.private /etc/opendkim/mail
+chown opendkim:opendkim /etc/opendkim/mail
+chmod 600 /etc/opendkim/mail
+
+# Set the dovecot confirmation permissions
+chown opendkim:opendkim /etc/opedkim.conf
+chown -R opendkim:opendkim /etc/opendkim
+chmod -R go-rwx /etc/opendkim
+
+
+#####################
+#        DSPAM      #
+#####################
+
+# make the dspam mail folder
+mkdir /vmail/dspam
+chown dspam:dspam /vmail/dspam
+
+# get rid of the dspam footer
+dspam_admin change preference default signatureLocation headers
+
+####################
+#
+the .dovecot.sieve file needs to be copied insided the folders of the mailboxes
+
+#####################
+#       GLOBAL      #
+#####################
+
+# make user vmail own all mail folders
+chown -R vmail:vmail /vmail
+chmod u+w /vmail
+
+
+
+
+
+
+
+
+
+
