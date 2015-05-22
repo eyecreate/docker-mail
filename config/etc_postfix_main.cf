@@ -44,8 +44,8 @@ unverified_sender_reject_code = 554
 smtpd_tls_cert_file = /mail_settings/ssl/wildcard_public_cert.crt
 smtpd_tls_key_file = /mail_settings/ssl/wildcard_private.key
 smtpd_use_tls=yes
-#smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-#smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 smtpd_tls_auth_only = yes
 smtp_tls_security_level = may
 smtp_tls_loglevel = 2
@@ -57,6 +57,8 @@ smtpd_sasl_path = private/auth
 smtpd_sasl_auth_enable = yes
 broken_sasl_auth_clients = yes
 smtpd_sasl_security_options = noanonymous
+smtpd_tls_mandatory_protocols = SSLv3, TLSv1
+smtpd_tls_mandatory_ciphers = medium, high
 
 smtpd_recipient_restrictions =
   permit_sasl_authenticated,
@@ -74,7 +76,6 @@ smtpd_recipient_restrictions =
   reject_rbl_client dnsbl.sorbs.net,
   reject_rbl_client all.spamrats.com=127.0.0.36,
   reject_rbl_client all.spamrats.com=127.0.0.38,
-  reject_rbl_client dnsbl.ahbl.org,
   check_policy_service inet:127.0.0.1:10023,
   permit
 
@@ -85,10 +86,10 @@ smtpd_recipient_restrictions =
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 virtual_alias_maps = hash:/etc/postfix/virtual
-virtual_mailbox_domains = hash:/etc/postfix/virtual-mailbox-domains
+virtual_mailbox_domains = /etc/postfix/virtual-mailbox-domains
 virtual_mailbox_maps = hash:/etc/postfix/virtual-mailbox-maps
+virtual_transport = dovecot
 dovecot_destination_recipient_limit = 1
-local_recipient_maps = $virtual_mailbox_maps
 
 relayhost =
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
@@ -96,11 +97,14 @@ mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
 
+mime_header_checks = regexp:/etc/postfix/smtp_header_checks
+header_checks = regexp:/etc/postfix/smtp_header_checks
 
 # OpenDKIM
+milter_default_action = accept
+milter_protocol = 2
 smtpd_milters = inet:127.0.0.1:8891
 non_smtpd_milters = $smtpd_milters
-milter_default_action = accept
 
 # new settings for dspam: only scan one mail at a time, localhost doesn't get scanned, everything else does
 dspam_destination_recipient_limit = 1

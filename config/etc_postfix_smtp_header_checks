@@ -1,4 +1,4 @@
-/^Received:.*with ESMTPSA/  IGNORE
+/^Received:/                IGNORE
 /^User-Agent:/              IGNORE
 /^X-Originating-IP:/        IGNORE
 /^X-Mailer:/                IGNORE
