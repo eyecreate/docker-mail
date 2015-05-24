@@ -11,7 +11,7 @@ A Dockerfile that runs a secure, configurable mailserver with all kinds of good 
 Build the docker image by running `make` or executing:
 
 ```shell
-docker build [--rm] -t <user>dockermail .
+docker build [--rm] -t <user>/mail .
 ```
 
 ### Configuration
@@ -59,7 +59,7 @@ you should have a <settings_folder> with a structured that is similar to the one
         foo.bar@mydomain.net:{SHA256-CRYPT}$6$e.n6OiX.c12RK2bz$zHHuDpq.Ewk0DXKYC.PDdjAb0jeaJM.zGm3K.hfqPDg/l.
         postmaster@myotherdomain.net:{PLAIN}pass12345
 
-    In order to generate the hash values, you need to call `doveadm pw -s <pw-scheme>`. For this you need dovecot installed; this can be done locally, or by firing up this container in attached state by calling `docker run -it --rm <user>/dockermail bash` and then running `mail-configure && doveadm pw -s <pw-scheme>`. It's recommended to use `SHA512-CRYPT` as pw scheme.
+    In order to generate the hash values, you need to call `doveadm pw -s <pw-scheme>`. For this you need dovecot installed; this can be done locally, or by firing up this container in attached state by calling `docker run -it --rm <user>/mail bash` and then running `mail-configure && doveadm pw -s <pw-scheme>`. It's recommended to use `SHA512-CRYPT` as pw scheme.
 
 6. Generate the DKIM key (again, either you have opendkim installed locally, or you run this container in attached mode) by calling:
 
@@ -92,7 +92,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
                -p 143:143 \
                -p 587:587 \
                -p 993:993 \
-               <user>/dockermail
+               <user>/mail
     ```
 
 2. If the folders are within a data container
@@ -104,7 +104,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
                -p 143:143 \
                -p 587:587 \
                -p 993:993 \
-               <user>/dockermail
+               <user>/mail
     ```
 
 3. (Or mixed) with the settings folder on the server and the storage in a data container
@@ -117,7 +117,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
                -p 143:143 \
                -p 587:587 \
                -p 993:993 \
-               <user>/dockermail
+               <user>/mail
     ```
 
 ## License
