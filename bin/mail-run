@@ -1,5 +1,5 @@
 #!/bin/sh
 set -e
 
-. mail-config
+. mail-configure
 . mail-init
