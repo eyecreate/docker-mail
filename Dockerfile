@@ -104,4 +104,4 @@ EXPOSE \
   25 143 587 993
 
 ENTRYPOINT \
-  ["/bin/znc-run"]
+  ["/bin/mail-run"]
