@@ -68,7 +68,7 @@ COPY ./config/etc_postfix_smtp_header_checks     /etc/postfix/smtp_header_checks
 VOLUME ["/mail_settings"]
 
 # vmail folder & user
-VOLUME ["/vmail"]
+VOLUME ["/data/vmail"]
 RUN \
   groupadd -g 5000 vmail && \
   useradd -g vmail -u 5000 vmail -d /vmail -m

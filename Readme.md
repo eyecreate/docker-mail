@@ -32,8 +32,8 @@ you should have a <settings_folder> with a structured that is similar to the one
     ```shell
     docker run -d --name mail-data \
                -v /mail_settings \
-               -v /vmail \
-               busybox:ubuntu-14.04
+               -v /data \
+               docxs/scratch
     ```
 
 2. Add the FQDN of your server to the first line of the file `<settings_folder>/hostname`. Example:
@@ -87,7 +87,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
     ```shell
     docker run -d [--name <name>] \
                -v <settings_folder>:/mail_settings \
-               -v <storage_folder>:/vmail \
+               -v <storage_folder>:/data/vmail \
                -p 25:25 \
                -p 143:143 \
                -p 587:587 \
