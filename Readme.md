@@ -1,4 +1,4 @@
-# Docker-mail
+# Docker-mail [![Docker registry](https://img.shields.io/badge/docker-registry-blue.svg)](https://registry.hub.docker.com/u/docxs/mail/) [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)]()
 
 A Dockerfile that runs a secure, configurable mailserver with all kinds of good stuff:
 - [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) over SSL via Postfix as MTA, with a set of [DNSBLs](https://en.wikipedia.org/wiki/DNSBL) so spam is cleared before it hits your mailbox.
@@ -127,4 +127,4 @@ Licensed under the MIT License. See the LICENSE file for details.
 
 ## Feedback, bug-reports, requests, ...
 
-Are [welcome](https://github.com/pjan/docker-mail/issues)!
+Are [welcome](https://github.com/docxs/docker-mail/issues)!
