@@ -110,6 +110,10 @@ Once the container is build (or pulled from the hub), the folders for the settin
 3. (Or mixed) with the settings folder on the server and the storage in a data container
 
     ```shell
+    docker run -d --name mail-data \
+               -v /data \
+               busybox
+
     docker run -d [--name <name>] \
                -v <settings_folder>:/settings \
                --volumes-from mail-data \
