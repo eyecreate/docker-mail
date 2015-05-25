@@ -24,14 +24,14 @@ you should have a <settings_folder> with a structured that is similar to the one
 
     This can be on the server, and the folder names can be freely chosen. example:
 
-        /opt/docker-mail/settings/
-        /opt/docker-mail/storage/
+        /opt/dockxs/mail/settings/
+        /opt/dockxs/mail/data/
 
     Alternatively, those folders can be inside a data container, but with specific volumes.
 
     ```shell
     docker run -d --name mail-data \
-               -v /mail_settings \
+               -v /settings \
                -v /data \
                docxs/scratch
     ```
@@ -86,7 +86,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
 
     ```shell
     docker run -d [--name <name>] \
-               -v <settings_folder>:/mail_settings \
+               -v <settings_folder>:/settings \
                -v <storage_folder>:/data/vmail \
                -p 25:25 \
                -p 143:143 \
@@ -111,7 +111,7 @@ Once the container is build (or pulled from the hub), the folders for the settin
 
     ```shell
     docker run -d [--name <name>] \
-               -v <settings_folder>:/mail_settings \
+               -v <settings_folder>:/settings \
                --volumes-from mail-data \
                -p 25:25 \
                -p 143:143 \

@@ -7,18 +7,18 @@ set -e
 
 # Check if we have SSL certificates in config, otherwise copy them there
 # The key
-if [ -f /mail_settings/ssl/wildcard_private.key ]; then
-  cp /mail_settings/ssl/wildcard_private.key /etc/ssl/private/ssl-cert-snakeoil.key
+if [ -f /settings/ssl/wildcard_private.key ]; then
+  cp /settings/ssl/wildcard_private.key /etc/ssl/private/ssl-cert-snakeoil.key
 else
-  mkdir -p /mail_settings/ssl
-  cp /etc/ssl/private/ssl-cert-snakeoil.key /mail_settings/ssl/wildcard_private.key
+  mkdir -p /settings/ssl
+  cp /etc/ssl/private/ssl-cert-snakeoil.key /settings/ssl/wildcard_private.key
 fi
 # The certificate
-if [ -f /mail_settings/ssl/wildcard_public_cert.crt ]; then
-  cp /mail_settings/ssl/wildcard_public_cert.crt /etc/ssl/certs/ssl-cert-snakeoil.pem
+if [ -f /settings/ssl/wildcard_public_cert.crt ]; then
+  cp /settings/ssl/wildcard_public_cert.crt /etc/ssl/certs/ssl-cert-snakeoil.pem
 else
-  mkdir -p /mail_settings/ssl
-  cp /etc/ssl/certs/ssl-cert-snakeoil.pem /mail_settings/ssl/wildcard_public_cert.crt
+  mkdir -p /settings/ssl
+  cp /etc/ssl/certs/ssl-cert-snakeoil.pem /settings/ssl/wildcard_public_cert.crt
 fi
 
 
@@ -27,14 +27,14 @@ fi
 #####################
 
 # Set the hostname in postfix config files
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/postfix/main.cf
-  echo $(sed 's:/:\\/:g' /mail_settings/hostname) > /etc/mailname
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/postfix/main.cf
+  echo $(sed 's:/:\\/:g' /settings/hostname) > /etc/mailname
 fi
 
 # Configure domains and aliases from setting
-cp /mail_settings/aliases /etc/postfix/virtual
-cp /mail_settings/domains /etc/postfix/virtual-mailbox-domains
+cp /settings/aliases /etc/postfix/virtual
+cp /settings/domains /etc/postfix/virtual-mailbox-domains
 
 mkdir /etc/postfix/tmp
 awk < /etc/postfix/virtual '{ print $2 }' > /etc/postfix/tmp/virtual-receivers
@@ -57,16 +57,16 @@ chown -R postfix:postfix /etc/postfix
 #####################
 
 # set the hostname in dovecot config files
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/dovecot/conf.d/15-lda.conf
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/dovecot/conf.d/15-lda.conf
 fi
 
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/dovecot/conf.d/20-imap.conf
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/dovecot/conf.d/20-imap.conf
 fi
 
 # Configure dovecot passwords from setting
-cp /mail_settings/passwords /etc/dovecot/passwd
+cp /settings/passwords /etc/dovecot/passwd
 
 # Set the dovecot confirmation permissions
 chown -R vmail:dovecot /etc/dovecot
@@ -80,20 +80,20 @@ chmod -R o-rwx /etc/dovecot
 mkdir -p /etc/opendkim
 
 # set the hostname in the opendkim config
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/opendkim/KeyTable
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/KeyTable
 fi
 
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/opendkim/SigningTable
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/SigningTable
 fi
 
-if [ -f /mail_settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /mail_settings/hostname)/g" /etc/opendkim/TrustedHosts
+if [ -f /settings/hostname ]; then
+  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/TrustedHosts
 fi
 
 # Move the opendkim mail key
-cp /mail_settings/mail.private /etc/opendkim/mail
+cp /settings/mail.private /etc/opendkim/mail
 chown opendkim:opendkim /etc/opendkim/mail
 chmod 600 /etc/opendkim/mail
 

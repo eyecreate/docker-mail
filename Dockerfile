@@ -65,7 +65,7 @@ COPY ./config/etc_postfix_master.cf              /etc/postfix/master.cf
 COPY ./config/etc_postfix_smtp_header_checks     /etc/postfix/smtp_header_checks
 
 # Configure settings
-VOLUME ["/mail_settings"]
+VOLUME ["/settings"]
 
 # vmail folder & user
 VOLUME ["/data/vmail"]
