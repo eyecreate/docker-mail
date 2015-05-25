@@ -12,36 +12,20 @@
 #
 # Component:
 # Author:       pjan vandaele <pjan@pjan.io>
-# Scm url:      https://github.com/pjan/docker-mail
+# Scm url:      https://github.com/docxs/docker-mail
 # License:      MIT
 ########################################################################
 
 # pull base image
-FROM debian:wheezy
+FROM docxs:latest
 
 # maintainer details
 MAINTAINER pjan vandaele "pjan@pjan.io"
 
-# add a post-invoke hook to dpkg which deletes cached deb files
-# update the sources.list
-# update/dist-upgrade
-# clear the caches
-RUN \
-  echo 'DPkg::Post-Invoke {"/bin/rm -f /var/cache/apt/archives/*.deb || true";};' | tee /etc/apt/apt.conf.d/no-cache && \
-  apt-get update -q -y && \
-  apt-get dist-upgrade -y && \
-  apt-get clean && \
-  rm -rf /var/cache/apt/*
-
-# set the locale
-RUN \
-  DEBIAN_FRONTEND=noninteractive apt-get install -q -y locales &&\
-  locale-gen en_US en_US.UTF-8 &&\
-  echo -e 'LANG="en_US.UTF-8"\nLANGUAGE="en_US:en"\n' > /etc/default/locale
-
 # install packages
 RUN \
-  DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
+  apt-prepare && \
+  apt-get install -q -y \
     rsyslog \
     ssl-cert \
     postfix \
@@ -58,7 +42,7 @@ RUN \
     dovecot-antispam \
     opendkim \
     opendkim-tools &&\
-  apt-get autoremove -y && apt-get clean && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+  apt-cleanup
 
 # Add configuration files
 COPY ./config/etc_dovecot_conf.d_10-auth.conf    /etc/dovecot/conf.d/10-auth.conf
@@ -86,14 +70,11 @@ VOLUME ["/mail_settings"]
 # vmail folder & user
 VOLUME ["/vmail"]
 RUN \
-  groupadd -g 5000 vmail
-RUN \
+  groupadd -g 5000 vmail && \
   useradd -g vmail -u 5000 vmail -d /vmail -m
 
 # Add the configure script
-COPY ./bin/mail-configure  /bin/mail-configure
-COPY ./bin/mail-init       /bin/mail-init
-COPY ./bin/mail-run        /bin/mail-run
+COPY ./bin/*  /bin/
 RUN \
   chmod 755 /bin/mail-configure &&\
   chmod 755 /bin/mail-init &&\
