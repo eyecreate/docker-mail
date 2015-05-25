@@ -17,7 +17,7 @@
 ########################################################################
 
 # pull base image
-FROM docxs:latest
+FROM docxs/base:latest
 
 # maintainer details
 MAINTAINER pjan vandaele "pjan@pjan.io"
