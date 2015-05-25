@@ -108,8 +108,8 @@ chmod -R go-rwx /etc/opendkim
 #####################
 
 # make the dspam mail folder
-mkdir -p /data/vmail/dspam
-chown dspam:dspam /data/vmail/dspam
+mkdir -p /data/dspam
+chown dspam:dspam /data/dspam
 
 # get rid of the dspam footer
 dspam_admin change preference default signatureLocation headers
@@ -121,5 +121,5 @@ dspam_admin change preference default signatureLocation headers
 #####################
 
 # make user vmail own all mail folders
-chown -R vmail:vmail /data/vmail
-chmod u+w /data/vmail
+chown -R vmail:vmail /data
+chmod u+w /data
