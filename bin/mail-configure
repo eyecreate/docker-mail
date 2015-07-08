@@ -32,6 +32,13 @@ if [ -f /settings/hostname ]; then
   echo $(sed 's:/:\\/:g' /settings/hostname) > /etc/mailname
 fi
 
+# Set the relay host for postfix if set
+if [ ${RELAYHOST+_} ]; then
+  sed -i 's%$RELAYHOST%'"$RELAYHOST"'%g' /etc/postfix/main.cf
+else
+  sed -i 's%$RELAYHOST% %g' /etc/postfix/main.cf
+fi
+
 # Configure domains and aliases from setting
 cp /settings/aliases /etc/postfix/virtual
 cp /settings/domains /etc/postfix/virtual-mailbox-domains
