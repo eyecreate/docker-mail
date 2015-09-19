@@ -2,7 +2,6 @@
 set -e
 
 service rsyslog start
-service opendkim start
 service postgrey start
 service postfix start
 service dovecot start
