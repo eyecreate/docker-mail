@@ -39,9 +39,7 @@ RUN \
     dovecot-lmtpd \
     dovecot-sieve \
     dovecot-managesieved \
-    dovecot-antispam \
-    opendkim \
-    opendkim-tools &&\
+    dovecot-antispam &&\
   apt-cleanup
 
 # Add configuration files
@@ -55,10 +53,6 @@ COPY ./config/etc_dovecot_conf.d_90-plugin.conf  /etc/dovecot/conf.d/90-plugin.c
 COPY ./config/etc_dovecot_dovecot.conf           /etc/dovecot/dovecot.conf
 COPY ./config/etc_dspam_default.prefs            /etc/dspam/default.prefs
 COPY ./config/etc_dspam_dspam.conf               /etc/dspam/dspam.conf
-COPY ./config/etc_opendkim.conf                  /etc/opendkim.conf
-COPY ./config/etc_opendkim_KeyTable              /etc/opendkim/KeyTable
-COPY ./config/etc_opendkim_SigningTable          /etc/opendkim/SigningTable
-COPY ./config/etc_opendkim_TrustedHosts          /etc/opendkim/TrustedHosts
 COPY ./config/etc_postfix_dspam_filter_access    /etc/postfix/dspam_filter_access
 COPY ./config/etc_postfix_main.cf                /etc/postfix/main.cf
 COPY ./config/etc_postfix_master.cf              /etc/postfix/master.cf
