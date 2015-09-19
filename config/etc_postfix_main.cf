@@ -100,12 +100,6 @@ recipient_delimiter = +
 mime_header_checks = regexp:/etc/postfix/smtp_header_checks
 header_checks = regexp:/etc/postfix/smtp_header_checks
 
-# OpenDKIM
-milter_default_action = accept
-milter_protocol = 2
-smtpd_milters = inet:127.0.0.1:8891
-non_smtpd_milters = $smtpd_milters
-
 # new settings for dspam: only scan one mail at a time, localhost doesn't get scanned, everything else does
 dspam_destination_recipient_limit = 1
 smtpd_client_restrictions =
