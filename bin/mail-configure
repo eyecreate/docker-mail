@@ -81,36 +81,6 @@ chmod -R o-rwx /etc/dovecot
 
 
 #####################
-#      OPENDKIM     #
-#####################
-# make sure the opendkim config directory is present
-mkdir -p /etc/opendkim
-
-# set the hostname in the opendkim config
-if [ -f /settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/KeyTable
-fi
-
-if [ -f /settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/SigningTable
-fi
-
-if [ -f /settings/hostname ]; then
-  sed -i -E "s/[$]HOSTNAME[$]/$(sed 's:/:\\/:g' /settings/hostname)/g" /etc/opendkim/TrustedHosts
-fi
-
-# Move the opendkim mail key
-cp /settings/mail.private /etc/opendkim/mail
-chown opendkim:opendkim /etc/opendkim/mail
-chmod 600 /etc/opendkim/mail
-
-# Set the dovecot confirmation permissions
-chown opendkim:opendkim /etc/opendkim.conf
-chown -R opendkim:opendkim /etc/opendkim
-chmod -R go-rwx /etc/opendkim
-
-
-#####################
 #        DSPAM      #
 #####################
 
