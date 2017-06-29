@@ -73,7 +73,6 @@ smtpd_recipient_restrictions =
   reject_rbl_client zen.spamhaus.org,
   reject_rbl_client cbl.abuseat.org,
   reject_rbl_client bl.spamcop.net,
-  reject_rbl_client dnsbl.sorbs.net,
   reject_rbl_client all.spamrats.com=127.0.0.36,
   reject_rbl_client all.spamrats.com=127.0.0.38,
   check_policy_service inet:127.0.0.1:10023,
